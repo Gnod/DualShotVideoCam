@@ -5,197 +5,419 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DualShot Cam — Dual-Camera Simultaneous Recording</title>
     <meta name="description" content="Record from wide-angle and ultra-wide cameras simultaneously. Perfect for content creators, vloggers, educators, and anyone who needs two perspectives at once.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #ffffff;
-            --surface: #f8f9fa;
-            --card: #ffffff;
-            --accent: #2563eb;
-            --text: #1a1a1a;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
+            /* Impeccable: tinted neutrals, not pure gray */
+            --bg: #faf9f7;
+            --surface: #f5f3ef;
+            --text: #1a1a18;
+            --text-secondary: #6b6964;
+            --text-tertiary: #9a9893;
+            --border: #e8e5df;
+            
+            /* Warm accent - amber/brick tone */
+            --accent: #c45c26;
+            --accent-hover: #a34d1f;
+            --accent-subtle: rgba(196, 92, 38, 0.08);
+            
+            /* Typography scale - impeccable modular */
+            --font-display: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Work Sans', -apple-system, sans-serif;
+            
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.5rem;
+            --text-2xl: 2rem;
+            --text-3xl: 3rem;
+            --text-4xl: clamp(2.5rem, 6vw, 4rem);
+            
+            /* Spacing - impeccable spatial */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-24: 6rem;
+            --space-32: 8rem;
         }
+        
         :root[data-theme="dark"] {
-            --bg: #0a0a0f;
-            --surface: #14141f;
-            --card: #1a1a2e;
-            --accent: #6c63ff;
-            --text: #e8e8f0;
-            --text-muted: #9898b0;
-            --border: rgba(255,255,255,0.08);
+            /* Dark mode: tinted dark, not pure black */
+            --bg: #121110;
+            --surface: #1a1917;
+            --text: #f5f3ef;
+            --text-secondary: #a8a59d;
+            --text-tertiary: #6b6862;
+            --border: #2a2825;
+            
+            --accent: #e07a3f;
+            --accent-hover: #f09055;
+            --accent-subtle: rgba(224, 122, 63, 0.12);
         }
+        
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        
+        html { 
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-body);
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            font-size: var(--text-base);
         }
-        a { color: var(--accent); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        
+        /* Impeccable: no purple links */
+        a { 
+            color: var(--accent); 
+            text-decoration: none; 
+            transition: color 0.2s ease;
+        }
+        a:hover { color: var(--accent-hover); }
 
-        /* Nav */
+        /* Navigation - impeccable: minimal, functional */
         .nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            background: rgba(255,255,255,0.95);
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 100;
+            background: rgba(250, 249, 247, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
         }
         :root[data-theme="dark"] .nav {
-            background: rgba(10,10,15,0.95);
+            background: rgba(18, 17, 16, 0.85);
         }
+        
         .nav-inner {
-            max-width: 1100px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 24px;
+            max-width: 1200px; 
+            margin: 0 auto;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: var(--space-4) var(--space-6);
         }
-        .nav-actions { display: flex; gap: 10px; align-items: center; }
-        .nav-brand { font-weight: 600; font-size: 1.1rem; }
-        .nav-brand span { color: var(--accent); }
-        .nav-links { display: flex; gap: 28px; }
-        .nav-links a { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--text); text-decoration: none; }
-        .lang-toggle, .theme-toggle {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--text-muted); padding: 6px 14px; border-radius: 6px;
-            font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; gap: 6px;
+        
+        .nav-brand { 
+            font-family: var(--font-display);
+            font-weight: 500; 
+            font-size: var(--text-lg);
+            letter-spacing: -0.02em;
         }
-        .lang-toggle:hover, .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
-        .theme-toggle svg { width: 16px; height: 16px; }
+        
+        .nav-links { 
+            display: flex; 
+            gap: var(--space-8); 
+        }
+        .nav-links a { 
+            color: var(--text-secondary); 
+            font-size: var(--text-sm); 
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        .nav-links a:hover { 
+            color: var(--text); 
+        }
+        
+        .nav-actions { 
+            display: flex; 
+            gap: var(--space-2); 
+            align-items: center; 
+        }
+        
+        /* Impeccable buttons: subtle, not card-like */
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: var(--space-2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon:hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+        .btn-icon svg { width: 18px; height: 18px; }
 
-        /* Hero */
+        /* Hero - impeccable: bold typography, generous spacing */
         .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            text-align: center; padding: 120px 24px 80px;
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            text-align: center; 
+            padding: var(--space-24) var(--space-6) var(--space-16);
         }
-        .hero-content { position: relative; max-width: 720px; }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--surface); border: 1px solid var(--border);
-            padding: 6px 16px; border-radius: 20px; font-size: 0.82rem;
-            color: var(--accent); margin-bottom: 28px; font-weight: 500;
+        
+        .hero-content { 
+            max-width: 800px; 
         }
-        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+        
+        .hero-label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            margin-bottom: var(--space-6);
+            display: inline-block;
+        }
+        
         .hero h1 {
-            font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700;
-            letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 20px;
+            font-family: var(--font-display);
+            font-size: var(--text-4xl);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: var(--space-6);
+            letter-spacing: -0.03em;
         }
-        .hero h1 .accent { color: var(--accent); }
+        
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        
         .hero p {
-            font-size: 1.1rem; color: var(--text-muted); max-width: 540px;
-            margin: 0 auto 36px; line-height: 1.7;
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto var(--space-8);
+            line-height: 1.7;
+            font-weight: 400;
         }
+        
         .hero-cta {
-            display: inline-flex; align-items: center; gap: 10px;
-            background: var(--accent); color: #fff; padding: 14px 32px;
-            border-radius: 8px; font-weight: 500; font-size: 1rem;
-            transition: opacity 0.2s;
+            display: inline-flex; 
+            align-items: center; 
+            gap: var(--space-2);
+            background: var(--accent); 
+            color: #fff; 
+            padding: var(--space-3) var(--space-6);
+            border-radius: 6px; 
+            font-weight: 500; 
+            font-size: var(--text-sm);
+            letter-spacing: 0.01em;
+            transition: all 0.2s ease;
         }
-        .hero-cta:hover { opacity: 0.9; text-decoration: none; }
-        .hero-cta svg { width: 20px; height: 20px; }
+        .hero-cta:hover { 
+            background: var(--accent-hover); 
+            color: #fff;
+            transform: translateY(-1px);
+        }
 
-        /* Phone mockup */
+        /* Phone mockup - impeccable: minimal framing */
         .phone-mockup {
-            margin: 48px auto 0; max-width: 360px;
-            background: var(--surface); border-radius: 36px;
-            padding: 10px;
+            margin: var(--space-12) auto 0; 
+            max-width: 340px;
+            padding: var(--space-2);
+            background: var(--surface);
+            border-radius: 44px;
             border: 1px solid var(--border);
         }
+        
         .phone-screen {
-            background: var(--bg); border-radius: 28px; overflow: hidden;
-            border: 1px solid var(--border);
+            background: #000; 
+            border-radius: 40px; 
+            overflow: hidden;
+            position: relative;
         }
-        :root[data-theme="dark"] .phone-mockup {
-            background: #1a1a30;
-        }
-        :root[data-theme="dark"] .phone-screen {
-            background: #0c0f1a;
-        }
+        
         .phone-screenshot {
-            width: 100%; height: auto; display: block;
-            border-radius: 28px;
+            width: 100%; 
+            height: auto; 
+            display: block;
         }
 
-        /* Section helpers */
-        .section { padding: 100px 24px; }
-        .section:nth-child(even) { background: var(--surface); }
-        .section-inner { max-width: 1100px; margin: 0 auto; }
-        .section-header { text-align: center; margin-bottom: 60px; }
+        /* Sections - impeccable: generous whitespace */
+        .section { 
+            padding: var(--space-24) var(--space-6); 
+        }
+        
+        .section-alt { 
+            background: var(--surface); 
+        }
+        
+        .section-inner { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
+        
+        .section-header { 
+            margin-bottom: var(--space-16); 
+        }
+        
+        .section-label {
+            font-size: var(--text-xs);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            margin-bottom: var(--space-3);
+            display: block;
+        }
+        
         .section-header h2 {
-            font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600;
-            letter-spacing: -0.02em; margin-bottom: 14px;
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-4);
+            line-height: 1.2;
         }
-        .section-header p { color: var(--text-muted); max-width: 560px; margin: 0 auto; font-size: 1rem; }
+        
+        .section-header p { 
+            color: var(--text-secondary); 
+            max-width: 520px; 
+            font-size: var(--text-lg);
+            line-height: 1.6;
+        }
 
-        /* Features grid */
+        /* Features - impeccable: no card nesting, minimal borders */
         .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
         }
-        .feature-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 28px;
+        
+        .feature-item {
+            padding: var(--space-6) 0;
         }
-        .feature-icon {
-            width: 40px; height: 40px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; margin-bottom: 16px;
-            background: var(--surface);
+        
+        .feature-number {
+            font-family: var(--font-display);
+            font-size: var(--text-sm);
+            color: var(--accent);
+            margin-bottom: var(--space-3);
+            font-weight: 500;
         }
-        .feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
-        .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+        
+        .feature-item h3 { 
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.01em;
+        }
+        
+        .feature-item p { 
+            color: var(--text-secondary); 
+            font-size: var(--text-base);
+            line-height: 1.7;
+        }
 
-        /* Audience */
-        .audience-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
+        /* Audience - impeccable: horizontal layout, minimal */
+        .audience-list {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-8);
         }
-        .audience-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 28px; text-align: center;
+        
+        .audience-item {
+            padding: var(--space-4) 0;
         }
-        .audience-emoji { font-size: 2rem; margin-bottom: 12px; }
-        .audience-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
-        .audience-card p { color: var(--text-muted); font-size: 0.85rem; }
+        
+        .audience-item h3 {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.01em;
+        }
+        
+        .audience-item p {
+            color: var(--text-secondary);
+            font-size: var(--text-base);
+            line-height: 1.6;
+        }
 
-        /* Specs */
+        /* Specs - impeccable: table-like, structured */
         .specs {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 40px; margin-top: 60px;
+            margin-top: var(--space-16);
         }
-        .specs h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 24px; text-align: center; }
+        
         .specs-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--border);
         }
+        
         .spec-item {
-            text-align: center; padding: 16px;
+            padding: var(--space-6) var(--space-4);
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
         }
-        .spec-value { font-size: 1.4rem; font-weight: 600; color: var(--accent); }
-        .spec-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+        
+        .spec-item:nth-child(3n) {
+            border-right: none;
+        }
+        
+        .spec-value { 
+            font-family: var(--font-display);
+            font-size: var(--text-2xl); 
+            font-weight: 500; 
+            color: var(--text);
+            margin-bottom: var(--space-1);
+        }
+        
+        .spec-label { 
+            font-size: var(--text-sm); 
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
-        /* Footer */
+        /* Footer - impeccable: minimal, elegant */
         .footer {
-            border-top: 1px solid var(--border); padding: 40px 24px;
-            text-align: center; color: var(--text-muted); font-size: 0.85rem;
-            background: var(--surface);
+            border-top: 1px solid var(--border); 
+            padding: var(--space-8) var(--space-6);
+            text-align: center;
         }
-        .footer a { color: var(--text-muted); }
-        .footer a:hover { color: var(--text); }
+        
+        .footer p {
+            color: var(--text-tertiary); 
+            font-size: var(--text-sm);
+        }
 
         /* Responsive */
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             .nav-links { display: none; }
-            .features-grid { grid-template-columns: 1fr; }
-            .audience-grid { grid-template-columns: 1fr 1fr; }
-            .specs-grid { grid-template-columns: 1fr 1fr; }
-            .section { padding: 60px 16px; }
-            .phone-mockup { max-width: 100%; margin-left: 16px; margin-right: 16px; }
+            .specs-grid { grid-template-columns: repeat(2, 1fr); }
+            .spec-item:nth-child(3n) { border-right: 1px solid var(--border); }
+            .spec-item:nth-child(2n) { border-right: none; }
+            .features-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+            .audience-list { grid-template-columns: 1fr 1fr; }
+            .section { padding: var(--space-16) var(--space-4); }
+            .hero { padding: var(--space-16) var(--space-4); }
         }
 
-        /* i18n hidden toggle */
+        @media (max-width: 480px) {
+            .audience-list { grid-template-columns: 1fr; }
+            .specs-grid { grid-template-columns: 1fr; }
+            .spec-item { border-right: none; }
+        }
+
+        /* i18n */
         .i18n-zh { display: none; }
         body.zh .i18n-en { display: none; }
         body.zh .i18n-zh { display: block; }
@@ -209,15 +431,11 @@
 <!-- Navigation -->
 <nav class="nav">
     <div class="nav-inner">
-        <div class="nav-brand"><span>DualShot</span> Cam</div>
+        <div class="nav-brand">DualShot Cam</div>
         <div class="nav-links">
             <a href="#features">
                 <span class="i18n-en-inline">Features</span>
                 <span class="i18n-zh-inline">功能</span>
-            </a>
-            <a href="#audience">
-                <span class="i18n-en-inline">For You</span>
-                <span class="i18n-zh-inline">适用人群</span>
             </a>
             <a href="#specs">
                 <span class="i18n-en-inline">Specs</span>
@@ -225,18 +443,18 @@
             </a>
         </div>
         <div class="nav-actions">
-            <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
-                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            <button class="btn-icon" id="theme-toggle-btn" aria-label="Toggle theme">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
                 </svg>
-                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none;">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                 </svg>
             </button>
-            <button class="lang-toggle" id="lang-toggle-btn" aria-label="Switch language">
-                <span class="i18n-en-inline">中文</span>
-                <span class="i18n-zh-inline">English</span>
+            <button class="btn-icon" id="lang-toggle-btn" aria-label="Switch language">
+                <span class="i18n-en-inline" style="font-size:11px;font-weight:500;">中</span>
+                <span class="i18n-zh-inline" style="font-size:11px;font-weight:500;">EN</span>
             </button>
         </div>
     </div>
@@ -245,132 +463,128 @@
 <!-- Hero -->
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-badge">
-            <span class="dot"></span>
-            <span class="i18n-en-inline">Dual-Camera Simultaneous Recording</span>
-            <span class="i18n-zh-inline">双摄同步录制</span>
-        </div>
+        <span class="hero-label">
+            <span class="i18n-en-inline">Dual-Camera Recording</span>
+            <span class="i18n-zh-inline">双摄录制</span>
+        </span>
         <h1>
             <span class="i18n-en">
-                Two Cameras. One Tap.<br><span class="accent">Infinite Possibilities.</span>
+                Two cameras.<br>One perfect <em>shot.</em>
             </span>
             <span class="i18n-zh">
-                双摄同录，一键开拍<br><span class="accent">无限可能</span>
+                两个镜头<br>一次完美<em>拍摄</em>
             </span>
         </h1>
         <p>
             <span class="i18n-en">
-                Record simultaneously from wide-angle and ultra-wide cameras. Capture the portrait close-up and the landscape context in a single session.
+                Record simultaneously from wide-angle and ultra-wide cameras. Capture portrait close-ups and landscape context in a single take.
             </span>
             <span class="i18n-zh">
-                同时录制广角竖屏和超广角横屏视频，一次拍摄同时获得近景特写与全景画面。
+                同时录制广角和超广角视频，一次拍摄获得近景特写与全景画面。
             </span>
         </p>
         <a href="https://github.com/Gnod/DualShotCam" class="hero-cta" style="display:none;">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             <span class="i18n-en-inline">View on GitHub</span>
-            <span class="i18n-zh-inline">在 GitHub 上查看</span>
+            <span class="i18n-zh-inline">在 GitHub 查看</span>
         </a>
 
-        <!-- Phone mockup -->
         <div class="phone-mockup">
             <div class="phone-screen">
-                <img src="screenshot.png" alt="DualShot Cam app interface showing dual-camera split-screen recording" class="phone-screenshot">
+                <img src="screenshot.png" alt="DualShot Cam app interface" class="phone-screenshot">
             </div>
         </div>
     </div>
 </section>
 
 <!-- Features -->
-<section class="section" id="features">
+<section class="section section-alt" id="features">
     <div class="section-inner">
         <div class="section-header">
+            <span class="section-label">
+                <span class="i18n-en-inline">Features</span>
+                <span class="i18n-zh-inline">功能</span>
+            </span>
             <h2>
-                <span class="i18n-en">Features</span>
-                <span class="i18n-zh">核心功能</span>
+                <span class="i18n-en">Everything you need.</span>
+                <span class="i18n-zh">一切所需。</span>
             </h2>
             <p>
-                <span class="i18n-en">Everything you need for professional dual-camera recording.</span>
-                <span class="i18n-zh">专业双摄录制所需的一切，尽在你的口袋中。</span>
+                <span class="i18n-en">Professional dual-camera recording, designed for creators.</span>
+                <span class="i18n-zh">为创作者设计的专业双摄录制工具。</span>
             </p>
         </div>
 
         <div class="features-grid">
-            <!-- Dual Recording -->
-            <div class="feature-card">
-                <div class="feature-icon">📹</div>
+            <div class="feature-item">
+                <div class="feature-number">01</div>
                 <h3>
-                    <span class="i18n-en">Dual Simultaneous Recording</span>
-                    <span class="i18n-zh">双摄同步录制</span>
+                    <span class="i18n-en">Dual Recording</span>
+                    <span class="i18n-zh">双摄同步</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record from both the wide-angle (portrait 9:16) and ultra-wide (landscape 16:9) cameras at the same time.</span>
-                    <span class="i18n-zh">利用 AVCaptureMultiCamSession 技术，同时从广角和超广角摄像头录制视频。</span>
+                    <span class="i18n-en">Wide-angle portrait and ultra-wide landscape simultaneously using AVCaptureMultiCamSession.</span>
+                    <span class="i18n-zh">利用 AVCaptureMultiCamSession 同时录制广角竖屏和超广角横屏。</span>
                 </p>
             </div>
 
-            <!-- Split Layout -->
-            <div class="feature-card">
-                <div class="feature-icon">🖥️</div>
+            <div class="feature-item">
+                <div class="feature-number">02</div>
                 <h3>
-                    <span class="i18n-en">Split View Layout</span>
-                    <span class="i18n-zh">分屏布局</span>
+                    <span class="i18n-en">Split View</span>
+                    <span class="i18n-zh">分屏预览</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">See both camera feeds side by side in a vertically stacked split view. Full visibility of both perspectives.</span>
-                    <span class="i18n-zh">上下分屏同时预览两个画面，超广角在上，广角在下，两个视角一目了然。</span>
+                    <span class="i18n-en">Vertically stacked preview with full visibility of both camera feeds.</span>
+                    <span class="i18n-zh">上下分屏同时预览两个画面，两个视角一目了然。</span>
                 </p>
             </div>
 
-            <!-- PiP Layout -->
-            <div class="feature-card">
-                <div class="feature-icon">🪟</div>
+            <div class="feature-item">
+                <div class="feature-number">03</div>
                 <h3>
-                    <span class="i18n-en">Picture-in-Picture Mode</span>
-                    <span class="i18n-zh">画中画模式</span>
+                    <span class="i18n-en">Picture in Picture</span>
+                    <span class="i18n-zh">画中画</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Full-screen wide-angle preview with a draggable ultra-wide floating window.</span>
-                    <span class="i18n-zh">广角全屏预览，超广角以可拖拽浮窗叠加显示，拖到任意位置获得最佳监看效果。</span>
+                    <span class="i18n-en">Full-screen wide preview with draggable ultra-wide floating window.</span>
+                    <span class="i18n-zh">广角全屏预览，超广角可拖拽浮窗叠加显示。</span>
                 </p>
             </div>
 
-            <!-- Quality -->
-            <div class="feature-card">
-                <div class="feature-icon">🎬</div>
+            <div class="feature-item">
+                <div class="feature-number">04</div>
                 <h3>
-                    <span class="i18n-en">Pro Video Quality</span>
-                    <span class="i18n-zh">专业视频质量</span>
+                    <span class="i18n-en">Pro Quality</span>
+                    <span class="i18n-zh">专业画质</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Choose between 1080p and 4K resolution, with frame rates of 24, 30, or 60 fps.</span>
-                    <span class="i18n-zh">支持 1080p 和 4K 分辨率，帧率可选 24、30 或 60 fps，HEVC 编码高效控制文件大小。</span>
+                    <span class="i18n-en">Up to 4K resolution, 24/30/60 fps, HEVC encoding for efficient files.</span>
+                    <span class="i18n-zh">最高 4K 分辨率，24/30/60 fps，HEVC 编码高效压缩。</span>
                 </p>
             </div>
 
-            <!-- Format -->
-            <div class="feature-card">
-                <div class="feature-icon">📁</div>
+            <div class="feature-item">
+                <div class="feature-number">05</div>
                 <h3>
-                    <span class="i18n-en">Flexible File Formats</span>
-                    <span class="i18n-zh">灵活的文件格式</span>
+                    <span class="i18n-en">Flexible Export</span>
+                    <span class="i18n-zh">灵活导出</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Export as MOV for professional editing, or choose MP4 for quick sharing on social media.</span>
-                    <span class="i18n-zh">导出 MOV 格式可在 Final Cut Pro 中专业剪辑，选择 MP4 则可快速分享到社交媒体。</span>
+                    <span class="i18n-en">MOV for professional editing, MP4 for quick sharing.</span>
+                    <span class="i18n-zh">MOV 格式用于专业剪辑，MP4 用于快速分享。</span>
                 </p>
             </div>
 
-            <!-- i18n -->
-            <div class="feature-card">
-                <div class="feature-icon">🌍</div>
+            <div class="feature-item">
+                <div class="feature-number">06</div>
                 <h3>
-                    <span class="i18n-en">Bilingual Interface</span>
-                    <span class="i18n-zh">双语界面</span>
+                    <span class="i18n-en">Bilingual</span>
+                    <span class="i18n-zh">双语支持</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Full English and Simplified Chinese localization. Automatically adapts to your device language.</span>
-                    <span class="i18n-zh">完整支持英文和简体中文，应用自动跟随设备语言设置进行切换。</span>
+                    <span class="i18n-en">English and Simplified Chinese. Automatically adapts to your device.</span>
+                    <span class="i18n-zh">英文和简体中文，自动跟随设备语言。</span>
                 </p>
             </div>
         </div>
@@ -381,59 +595,62 @@
 <section class="section" id="audience">
     <div class="section-inner">
         <div class="section-header">
+            <span class="section-label">
+                <span class="i18n-en-inline">For</span>
+                <span class="i18n-zh-inline">适用</span>
+            </span>
             <h2>
-                <span class="i18n-en">Made For You</span>
-                <span class="i18n-zh">为你而造</span>
+                <span class="i18n-en">Made for creators.</span>
+                <span class="i18n-zh">为创作者而造。</span>
             </h2>
             <p>
-                <span class="i18n-en">Whether you create content, teach, or just love capturing moments.</span>
-                <span class="i18n-zh">无论你是内容创作者、教育工作者，还是热爱记录生活的普通用户。</span>
+                <span class="i18n-en">Whether you create content, teach, or capture moments.</span>
+                <span class="i18n-zh">无论你是内容创作者、教育工作者，还是记录生活。</span>
             </p>
         </div>
 
-        <div class="audience-grid">
-            <div class="audience-card">
-                <div class="audience-emoji">🎥</div>
+        <div class="audience-list">
+            <div class="audience-item">
                 <h3>
                     <span class="i18n-en">Content Creators</span>
                     <span class="i18n-zh">内容创作者</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Capture a close-up reaction and a wide establishing shot simultaneously.</span>
-                    <span class="i18n-zh">同时拍摄特写反应和全景镜头，无需多台设备即可获得多角度素材。</span>
+                    <span class="i18n-en">Close-up reaction and wide establishing shot, simultaneously.</span>
+                    <span class="i18n-zh">同时拍摄特写反应和全景镜头，无需多台设备。</span>
                 </p>
             </div>
-            <div class="audience-card">
-                <div class="audience-emoji">📱</div>
+
+            <div class="audience-item">
                 <h3>
                     <span class="i18n-en">Vloggers</span>
                     <span class="i18n-zh">视频博主</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Film yourself in portrait while recording the scene in ultra-wide landscape.</span>
-                    <span class="i18n-zh">竖屏拍摄自己的同时，超广角横屏记录周围场景，一次拍摄获得 A-roll 和 B-roll。</span>
+                    <span class="i18n-en">Portrait selfie plus ultra-wide scene in one take.</span>
+                    <span class="i18n-zh">竖屏自拍加横屏场景，一次拍摄获得 A-roll 和 B-roll。</span>
                 </p>
             </div>
-            <div class="audience-card">
-                <div class="audience-emoji">🎓</div>
+
+            <div class="audience-item">
                 <h3>
                     <span class="i18n-en">Educators</span>
                     <span class="i18n-zh">教育工作者</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record yourself teaching while capturing the whiteboard or demonstration area.</span>
-                    <span class="i18n-zh">录制教学画面的同时，用超广角捕捉白板或演示区域的全景。</span>
+                    <span class="i18n-en">Record teaching and capture whiteboard simultaneously.</span>
+                    <span class="i18n-zh">录制教学同时捕捉白板全景。</span>
                 </p>
             </div>
-            <div class="audience-card">
-                <div class="audience-emoji">✨</div>
+
+            <div class="audience-item">
                 <h3>
-                    <span class="i18n-en">Everyday Users</span>
-                    <span class="i18n-zh">普通用户</span>
+                    <span class="i18n-en">Everyday</span>
+                    <span class="i18n-zh">日常记录</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record family events, travel moments, or anything where two perspectives tell a better story.</span>
-                    <span class="i18n-zh">记录家庭活动、旅行瞬间，双视角让你的故事更加精彩。</span>
+                    <span class="i18n-en">Family events, travel moments—two perspectives, better stories.</span>
+                    <span class="i18n-zh">家庭活动、旅行瞬间，双视角让故事更精彩。</span>
                 </p>
             </div>
         </div>
@@ -441,65 +658,65 @@
 </section>
 
 <!-- Specs -->
-<section class="section" id="specs">
+<section class="section section-alt" id="specs">
     <div class="section-inner">
         <div class="section-header">
+            <span class="section-label">
+                <span class="i18n-en-inline">Specs</span>
+                <span class="i18n-zh-inline">规格</span>
+            </span>
             <h2>
-                <span class="i18n-en">Technical Specifications</span>
-                <span class="i18n-zh">技术规格</span>
+                <span class="i18n-en">Technical details.</span>
+                <span class="i18n-zh">技术参数。</span>
             </h2>
             <p>
-                <span class="i18n-en">Built with SwiftUI and AVFoundation for a native iOS experience.</span>
-                <span class="i18n-zh">基于 SwiftUI 和 AVFoundation 构建，提供原生高性能的 iOS 体验。</span>
+                <span class="i18n-en">Built with SwiftUI and AVFoundation.</span>
+                <span class="i18n-zh">基于 SwiftUI 和 AVFoundation 构建。</span>
             </p>
         </div>
 
         <div class="specs">
-            <h3>
-                <span class="i18n-en">At a Glance</span>
-                <span class="i18n-zh">概览</span>
-            </h3>
             <div class="specs-grid">
                 <div class="spec-item">
                     <div class="spec-value">4K</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Max Resolution</span>
-                        <span class="i18n-zh">最高分辨率</span>
+                        <span class="i18n-en-inline">Resolution</span>
+                        <span class="i18n-zh-inline">分辨率</span>
                     </div>
                 </div>
                 <div class="spec-item">
                     <div class="spec-value">60fps</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Max Frame Rate</span>
-                        <span class="i18n-zh">最高帧率</span>
+                        <span class="i18n-en-inline">Frame Rate</span>
+                        <span class="i18n-zh-inline">帧率</span>
                     </div>
                 </div>
                 <div class="spec-item">
                     <div class="spec-value">HEVC</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Video Codec</span>
-                        <span class="i18n-zh">视频编码</span>
+                        <span class="i18n-en-inline">Codec</span>
+                        <span class="i18n-zh-inline">编码</span>
                     </div>
                 </div>
                 <div class="spec-item">
-                    <div class="spec-value">2</div>
+                    <div class="spec-value">2×</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Simultaneous Cameras</span>
-                        <span class="i18n-zh">同时录制摄像头</span>
+                        <span class="i18n-en-inline">Cameras</span>
+                        <span class="i18n-zh-inline">摄像头</span>
                     </div>
                 </div>
                 <div class="spec-item">
                     <div class="spec-value">iOS 16+</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Minimum Version</span>
-                        <span class="i18n-zh">最低系统版本</span>
+                        <span class="i18n-en-inline">Required</span>
+                        <span class="i18n-zh-inline">系统要求</span>
                     </div>
                 </div>
                 <div class="spec-item">
                     <div class="spec-value">SwiftUI</div>
                     <div class="spec-label">
-                        <span class="i18n-en">UI Framework</span>
-                        <span class="i18n-zh">界面框架</span>
+                        <span class="i18n-en-inline">Framework</span>
+                        <span class="i18n-zh-inline">框架</span>
                     </div>
                 </div>
             </div>
@@ -510,9 +727,9 @@
 <!-- Footer -->
 <footer class="footer">
     <p>
-        <span>
-            Gnod Studio &copy; 2026. All rights reserved.
-        </span>
+        <span>Gnod Studio</span> — 
+        <span class="i18n-en-inline">All rights reserved.</span>
+        <span class="i18n-zh-inline">保留所有权利。</span>
     </p>
 </footer>
 
@@ -521,8 +738,6 @@
         var isZh = lang === 'zh';
         document.body.classList.toggle('zh', isZh);
         document.getElementById('html-root').lang = isZh ? 'zh-Hans' : 'en';
-        document.getElementById('lang-toggle-btn').setAttribute('aria-label',
-            isZh ? 'Switch to English' : '切换到中文');
     }
 
     document.getElementById('lang-toggle-btn').addEventListener('click', function() {
@@ -531,7 +746,6 @@
         applyLang(newLang);
     });
 
-    // Theme toggle
     function applyTheme(theme) {
         var root = document.documentElement;
         var isDark = theme === 'dark';
@@ -544,8 +758,6 @@
         var moonIcon = document.querySelector('.icon-moon');
         if (sunIcon) sunIcon.style.display = isDark ? 'none' : 'block';
         if (moonIcon) moonIcon.style.display = isDark ? 'block' : 'none';
-        document.getElementById('theme-toggle-btn').setAttribute('aria-label',
-            isDark ? '切换到浅色模式' : 'Switch to dark mode');
     }
 
     document.getElementById('theme-toggle-btn').addEventListener('click', function() {
@@ -558,7 +770,6 @@
     // Restore preferences
     applyLang(localStorage.getItem('lang') || 'en');
     
-    // Check for saved theme or system preference
     var savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         applyTheme(savedTheme);
