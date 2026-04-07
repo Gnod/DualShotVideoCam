@@ -7,15 +7,22 @@
     <meta name="description" content="Record from wide-angle and ultra-wide cameras simultaneously. Perfect for content creators, vloggers, educators, and anyone who needs two perspectives at once.">
     <style>
         :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --text: #1a1a1a;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        :root[data-theme="dark"] {
             --bg: #0a0a0f;
             --surface: #14141f;
             --card: #1a1a2e;
             --accent: #6c63ff;
-            --accent2: #ff6b6b;
             --text: #e8e8f0;
             --text-muted: #9898b0;
-            --border: rgba(255,255,255,0.06);
-            --glow: rgba(108,99,255,0.15);
+            --border: rgba(255,255,255,0.08);
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -32,96 +39,95 @@
         /* Nav */
         .nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            background: rgba(10,10,15,0.8);
+            background: rgba(255,255,255,0.95);
             border-bottom: 1px solid var(--border);
+        }
+        :root[data-theme="dark"] .nav {
+            background: rgba(10,10,15,0.95);
         }
         .nav-inner {
             max-width: 1100px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
             padding: 16px 24px;
         }
-        .nav-brand { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .nav-brand { font-weight: 600; font-size: 1.1rem; }
         .nav-brand span { color: var(--accent); }
         .nav-links { display: flex; gap: 28px; }
         .nav-links a { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); text-decoration: none; }
-        .lang-toggle {
-            background: rgba(255,255,255,0.08); border: 1px solid var(--border);
-            color: var(--text-muted); padding: 6px 14px; border-radius: 20px;
+        .lang-toggle, .theme-toggle {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text-muted); padding: 6px 14px; border-radius: 6px;
             font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
         }
-        .lang-toggle:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+        .lang-toggle:hover, .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+        .theme-toggle svg { width: 16px; height: 16px; }
 
         /* Hero */
         .hero {
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
             text-align: center; padding: 120px 24px 80px;
-            position: relative; overflow: hidden;
-        }
-        .hero::before {
-            content: ''; position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 800px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
-            pointer-events: none;
         }
         .hero-content { position: relative; max-width: 720px; }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2);
+            background: var(--surface); border: 1px solid var(--border);
             padding: 6px 16px; border-radius: 20px; font-size: 0.82rem;
             color: var(--accent); margin-bottom: 28px; font-weight: 500;
         }
         .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
         .hero h1 {
-            font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800;
-            letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 20px;
+            font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700;
+            letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 20px;
         }
-        .hero h1 .gradient {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        .hero h1 .accent { color: var(--accent); }
         .hero p {
-            font-size: 1.15rem; color: var(--text-muted); max-width: 540px;
+            font-size: 1.1rem; color: var(--text-muted); max-width: 540px;
             margin: 0 auto 36px; line-height: 1.7;
         }
         .hero-cta {
             display: inline-flex; align-items: center; gap: 10px;
             background: var(--accent); color: #fff; padding: 14px 32px;
-            border-radius: 12px; font-weight: 600; font-size: 1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+            border-radius: 8px; font-weight: 500; font-size: 1rem;
+            transition: opacity 0.2s;
         }
-        .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.4); text-decoration: none; }
+        .hero-cta:hover { opacity: 0.9; text-decoration: none; }
         .hero-cta svg { width: 20px; height: 20px; }
 
         /* Phone mockup */
         .phone-mockup {
-            margin: 48px auto 0; max-width: 380px;
-            background: #1a1a30; border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.04); padding: 12px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.5),
-                        inset 0 1px 0 rgba(255,255,255,0.04);
+            margin: 48px auto 0; max-width: 360px;
+            background: var(--surface); border-radius: 36px;
+            padding: 10px;
+            border: 1px solid var(--border);
         }
         .phone-screen {
-            background: #0c0f1a; border-radius: 30px; overflow: hidden;
-            position: relative;
+            background: var(--bg); border-radius: 28px; overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        :root[data-theme="dark"] .phone-mockup {
+            background: #1a1a30;
+        }
+        :root[data-theme="dark"] .phone-screen {
+            background: #0c0f1a;
         }
         .phone-screenshot {
             width: 100%; height: auto; display: block;
-            border-radius: 30px;
+            border-radius: 28px;
         }
 
         /* Section helpers */
         .section { padding: 100px 24px; }
+        .section:nth-child(even) { background: var(--surface); }
         .section-inner { max-width: 1100px; margin: 0 auto; }
         .section-header { text-align: center; margin-bottom: 60px; }
         .section-header h2 {
-            font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700;
+            font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600;
             letter-spacing: -0.02em; margin-bottom: 14px;
         }
-        .section-header p { color: var(--text-muted); max-width: 560px; margin: 0 auto; font-size: 1.05rem; }
+        .section-header p { color: var(--text-muted); max-width: 560px; margin: 0 auto; font-size: 1rem; }
 
         /* Features grid */
         .features-grid {
@@ -130,27 +136,16 @@
         }
         .feature-card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 32px;
-            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(108,99,255,0.2);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            border-radius: 12px; padding: 28px;
         }
         .feature-icon {
-            width: 48px; height: 48px; border-radius: 12px;
+            width: 40px; height: 40px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; margin-bottom: 18px;
+            font-size: 1.3rem; margin-bottom: 16px;
+            background: var(--surface);
         }
-        .fi-dual { background: rgba(108,99,255,0.12); }
-        .fi-layout { background: rgba(255,107,107,0.12); }
-        .fi-quality { background: rgba(46,213,115,0.12); }
-        .fi-format { background: rgba(255,193,7,0.12); }
-        .fi-pip { background: rgba(0,206,209,0.12); }
-        .fi-i18n { background: rgba(155,89,182,0.12); }
-        .feature-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
-        .feature-card p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
+        .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
 
         /* Audience */
         .audience-grid {
@@ -158,36 +153,34 @@
             gap: 20px;
         }
         .audience-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 16px; padding: 32px; text-align: center;
-            transition: transform 0.25s;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 28px; text-align: center;
         }
-        .audience-card:hover { transform: translateY(-3px); }
-        .audience-emoji { font-size: 2.4rem; margin-bottom: 14px; }
-        .audience-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
-        .audience-card p { color: var(--text-muted); font-size: 0.88rem; }
+        .audience-emoji { font-size: 2rem; margin-bottom: 12px; }
+        .audience-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+        .audience-card p { color: var(--text-muted); font-size: 0.85rem; }
 
         /* Specs */
         .specs {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 20px; padding: 48px; margin-top: 60px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 40px; margin-top: 60px;
         }
-        .specs h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; text-align: center; }
+        .specs h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 24px; text-align: center; }
         .specs-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 16px;
         }
         .spec-item {
-            background: var(--card); border-radius: 12px; padding: 20px;
-            text-align: center;
+            text-align: center; padding: 16px;
         }
-        .spec-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-        .spec-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+        .spec-value { font-size: 1.4rem; font-weight: 600; color: var(--accent); }
+        .spec-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
         /* Footer */
         .footer {
             border-top: 1px solid var(--border); padding: 40px 24px;
             text-align: center; color: var(--text-muted); font-size: 0.85rem;
+            background: var(--surface);
         }
         .footer a { color: var(--text-muted); }
         .footer a:hover { color: var(--text); }
@@ -199,7 +192,7 @@
             .audience-grid { grid-template-columns: 1fr 1fr; }
             .specs-grid { grid-template-columns: 1fr 1fr; }
             .section { padding: 60px 16px; }
-            .phone-mockup { max-width: 100%; margin-left: 16px; margin-right: 16px; padding: 10px; }
+            .phone-mockup { max-width: 100%; margin-left: 16px; margin-right: 16px; }
         }
 
         /* i18n hidden toggle */
@@ -231,10 +224,21 @@
                 <span class="i18n-zh-inline">规格</span>
             </a>
         </div>
-        <button class="lang-toggle" id="lang-toggle-btn" aria-label="Switch language">
-            <span class="i18n-en-inline">中文</span>
-            <span class="i18n-zh-inline">English</span>
-        </button>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <button class="lang-toggle" id="lang-toggle-btn" aria-label="Switch language">
+                <span class="i18n-en-inline">中文</span>
+                <span class="i18n-zh-inline">English</span>
+            </button>
+        </div>
     </div>
 </nav>
 
@@ -248,18 +252,18 @@
         </div>
         <h1>
             <span class="i18n-en">
-                Two Cameras.<br>One Tap.<br><span class="gradient">Infinite Possibilities.</span>
+                Two Cameras. One Tap.<br><span class="accent">Infinite Possibilities.</span>
             </span>
             <span class="i18n-zh">
-                双摄同录<br>一键开拍<br><span class="gradient">无限可能</span>
+                双摄同录，一键开拍<br><span class="accent">无限可能</span>
             </span>
         </h1>
         <p>
             <span class="i18n-en">
-                Record simultaneously from wide-angle and ultra-wide cameras. Capture the portrait close-up and the landscape context in a single session — no extra gear needed.
+                Record simultaneously from wide-angle and ultra-wide cameras. Capture the portrait close-up and the landscape context in a single session.
             </span>
             <span class="i18n-zh">
-                同时录制广角竖屏和超广角横屏视频，一次拍摄同时获得近景特写与全景画面，无需额外设备。
+                同时录制广角竖屏和超广角横屏视频，一次拍摄同时获得近景特写与全景画面。
             </span>
         </p>
         <a href="https://github.com/Gnod/DualShotCam" class="hero-cta" style="display:none;">
@@ -282,11 +286,11 @@
     <div class="section-inner">
         <div class="section-header">
             <h2>
-                <span class="i18n-en">Powerful Features</span>
+                <span class="i18n-en">Features</span>
                 <span class="i18n-zh">核心功能</span>
             </h2>
             <p>
-                <span class="i18n-en">Everything you need for professional dual-camera recording, right in your pocket.</span>
+                <span class="i18n-en">Everything you need for professional dual-camera recording.</span>
                 <span class="i18n-zh">专业双摄录制所需的一切，尽在你的口袋中。</span>
             </p>
         </div>
@@ -294,79 +298,79 @@
         <div class="features-grid">
             <!-- Dual Recording -->
             <div class="feature-card">
-                <div class="feature-icon fi-dual">📹</div>
+                <div class="feature-icon">📹</div>
                 <h3>
                     <span class="i18n-en">Dual Simultaneous Recording</span>
                     <span class="i18n-zh">双摄同步录制</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record from both the wide-angle (portrait 9:16) and ultra-wide (landscape 16:9) cameras at the same time using Apple's AVCaptureMultiCamSession technology.</span>
-                    <span class="i18n-zh">利用 Apple AVCaptureMultiCamSession 技术，同时从广角（竖屏 9:16）和超广角（横屏 16:9）摄像头录制视频。</span>
+                    <span class="i18n-en">Record from both the wide-angle (portrait 9:16) and ultra-wide (landscape 16:9) cameras at the same time.</span>
+                    <span class="i18n-zh">利用 AVCaptureMultiCamSession 技术，同时从广角和超广角摄像头录制视频。</span>
                 </p>
             </div>
 
             <!-- Split Layout -->
             <div class="feature-card">
-                <div class="feature-icon fi-layout">🖥️</div>
+                <div class="feature-icon">🖥️</div>
                 <h3>
                     <span class="i18n-en">Split View Layout</span>
                     <span class="i18n-zh">分屏布局</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">See both camera feeds side by side in a vertically stacked split view. Ultra-wide on top, wide on bottom — full visibility of both perspectives.</span>
+                    <span class="i18n-en">See both camera feeds side by side in a vertically stacked split view. Full visibility of both perspectives.</span>
                     <span class="i18n-zh">上下分屏同时预览两个画面，超广角在上，广角在下，两个视角一目了然。</span>
                 </p>
             </div>
 
             <!-- PiP Layout -->
             <div class="feature-card">
-                <div class="feature-icon fi-pip">🪟</div>
+                <div class="feature-icon">🪟</div>
                 <h3>
                     <span class="i18n-en">Picture-in-Picture Mode</span>
                     <span class="i18n-zh">画中画模式</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Full-screen wide-angle preview with a draggable ultra-wide floating window. Drag it anywhere on screen for the perfect monitoring position.</span>
+                    <span class="i18n-en">Full-screen wide-angle preview with a draggable ultra-wide floating window.</span>
                     <span class="i18n-zh">广角全屏预览，超广角以可拖拽浮窗叠加显示，拖到任意位置获得最佳监看效果。</span>
                 </p>
             </div>
 
             <!-- Quality -->
             <div class="feature-card">
-                <div class="feature-icon fi-quality">🎬</div>
+                <div class="feature-icon">🎬</div>
                 <h3>
                     <span class="i18n-en">Pro Video Quality</span>
                     <span class="i18n-zh">专业视频质量</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Choose between 1080p and 4K resolution, with frame rates of 24, 30, or 60 fps. HEVC encoding keeps file sizes manageable without sacrificing quality.</span>
-                    <span class="i18n-zh">支持 1080p 和 4K 分辨率，帧率可选 24、30 或 60 fps。HEVC 编码在保证画质的同时有效控制文件大小。</span>
+                    <span class="i18n-en">Choose between 1080p and 4K resolution, with frame rates of 24, 30, or 60 fps.</span>
+                    <span class="i18n-zh">支持 1080p 和 4K 分辨率，帧率可选 24、30 或 60 fps，HEVC 编码高效控制文件大小。</span>
                 </p>
             </div>
 
             <!-- Format -->
             <div class="feature-card">
-                <div class="feature-icon fi-format">📁</div>
+                <div class="feature-icon">📁</div>
                 <h3>
                     <span class="i18n-en">Flexible File Formats</span>
                     <span class="i18n-zh">灵活的文件格式</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Export as MOV for professional editing in Final Cut Pro or DaVinci Resolve, or choose MP4 for quick sharing on social media.</span>
-                    <span class="i18n-zh">导出 MOV 格式可在 Final Cut Pro 或 DaVinci Resolve 中专业剪辑，选择 MP4 则可快速分享到社交媒体。</span>
+                    <span class="i18n-en">Export as MOV for professional editing, or choose MP4 for quick sharing on social media.</span>
+                    <span class="i18n-zh">导出 MOV 格式可在 Final Cut Pro 中专业剪辑，选择 MP4 则可快速分享到社交媒体。</span>
                 </p>
             </div>
 
             <!-- i18n -->
             <div class="feature-card">
-                <div class="feature-icon fi-i18n">🌍</div>
+                <div class="feature-icon">🌍</div>
                 <h3>
                     <span class="i18n-en">Bilingual Interface</span>
                     <span class="i18n-zh">双语界面</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Full English and Simplified Chinese localization. The app automatically adapts to your device language setting.</span>
-                    <span class="i18n-zh">完整支持英文和简体中文，应用会自动跟随您的设备语言设置进行切换。</span>
+                    <span class="i18n-en">Full English and Simplified Chinese localization. Automatically adapts to your device language.</span>
+                    <span class="i18n-zh">完整支持英文和简体中文，应用自动跟随设备语言设置进行切换。</span>
                 </p>
             </div>
         </div>
@@ -374,7 +378,7 @@
 </section>
 
 <!-- Audience -->
-<section class="section" id="audience" style="background: var(--surface);">
+<section class="section" id="audience">
     <div class="section-inner">
         <div class="section-header">
             <h2>
@@ -382,8 +386,8 @@
                 <span class="i18n-zh">为你而造</span>
             </h2>
             <p>
-                <span class="i18n-en">Whether you create content, teach, or just love capturing moments — DualShot Cam has you covered.</span>
-                <span class="i18n-zh">无论你是内容创作者、教育工作者，还是热爱记录生活的普通用户，DualShot Cam 都能满足你的需求。</span>
+                <span class="i18n-en">Whether you create content, teach, or just love capturing moments.</span>
+                <span class="i18n-zh">无论你是内容创作者、教育工作者，还是热爱记录生活的普通用户。</span>
             </p>
         </div>
 
@@ -395,7 +399,7 @@
                     <span class="i18n-zh">内容创作者</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Capture a close-up reaction and a wide establishing shot simultaneously. Perfect for multi-angle content without multiple devices.</span>
+                    <span class="i18n-en">Capture a close-up reaction and a wide establishing shot simultaneously.</span>
                     <span class="i18n-zh">同时拍摄特写反应和全景镜头，无需多台设备即可获得多角度素材。</span>
                 </p>
             </div>
@@ -406,7 +410,7 @@
                     <span class="i18n-zh">视频博主</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Film yourself in portrait while recording the scene in ultra-wide landscape. Get B-roll and A-roll in one take.</span>
+                    <span class="i18n-en">Film yourself in portrait while recording the scene in ultra-wide landscape.</span>
                     <span class="i18n-zh">竖屏拍摄自己的同时，超广角横屏记录周围场景，一次拍摄获得 A-roll 和 B-roll。</span>
                 </p>
             </div>
@@ -417,7 +421,7 @@
                     <span class="i18n-zh">教育工作者</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record yourself teaching while capturing the whiteboard or demonstration area with the ultra-wide camera.</span>
+                    <span class="i18n-en">Record yourself teaching while capturing the whiteboard or demonstration area.</span>
                     <span class="i18n-zh">录制教学画面的同时，用超广角捕捉白板或演示区域的全景。</span>
                 </p>
             </div>
@@ -428,7 +432,7 @@
                     <span class="i18n-zh">普通用户</span>
                 </h3>
                 <p>
-                    <span class="i18n-en">Record family events, travel moments, or anything where two perspectives tell a better story than one.</span>
+                    <span class="i18n-en">Record family events, travel moments, or anything where two perspectives tell a better story.</span>
                     <span class="i18n-zh">记录家庭活动、旅行瞬间，双视角让你的故事更加精彩。</span>
                 </p>
             </div>
@@ -445,8 +449,8 @@
                 <span class="i18n-zh">技术规格</span>
             </h2>
             <p>
-                <span class="i18n-en">Built with SwiftUI and AVFoundation for a native, high-performance iOS experience.</span>
-                <span class="i18n-zh">基于 SwiftUI 和 AVFoundation 构建，提供原生、高性能的 iOS 体验。</span>
+                <span class="i18n-en">Built with SwiftUI and AVFoundation for a native iOS experience.</span>
+                <span class="i18n-zh">基于 SwiftUI 和 AVFoundation 构建，提供原生高性能的 iOS 体验。</span>
             </p>
         </div>
 
@@ -487,7 +491,7 @@
                 <div class="spec-item">
                     <div class="spec-value">iOS 16+</div>
                     <div class="spec-label">
-                        <span class="i18n-en">Minimum iOS Version</span>
+                        <span class="i18n-en">Minimum Version</span>
                         <span class="i18n-zh">最低系统版本</span>
                     </div>
                 </div>
@@ -507,9 +511,8 @@
 <footer class="footer">
     <p>
         <span>
-            Gnod Studio &copy; 2026. ALL RIGHTS RESERVED.
+            Gnod Studio &copy; 2026. All rights reserved.
         </span>
-       
     </p>
 </footer>
 
@@ -528,8 +531,40 @@
         applyLang(newLang);
     });
 
-    // Restore language preference
+    // Theme toggle
+    function applyTheme(theme) {
+        var root = document.documentElement;
+        var isDark = theme === 'dark';
+        if (isDark) {
+            root.setAttribute('data-theme', 'dark');
+        } else {
+            root.removeAttribute('data-theme');
+        }
+        var sunIcon = document.querySelector('.icon-sun');
+        var moonIcon = document.querySelector('.icon-moon');
+        if (sunIcon) sunIcon.style.display = isDark ? 'none' : 'block';
+        if (moonIcon) moonIcon.style.display = isDark ? 'block' : 'none';
+        document.getElementById('theme-toggle-btn').setAttribute('aria-label',
+            isDark ? '切换到浅色模式' : 'Switch to dark mode');
+    }
+
+    document.getElementById('theme-toggle-btn').addEventListener('click', function() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var newTheme = isDark ? 'light' : 'dark';
+        localStorage.setItem('theme', newTheme);
+        applyTheme(newTheme);
+    });
+
+    // Restore preferences
     applyLang(localStorage.getItem('lang') || 'en');
+    
+    // Check for saved theme or system preference
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
+    }
 </script>
 
 </body>
